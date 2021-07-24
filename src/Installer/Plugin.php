@@ -39,6 +39,16 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     private $pluginImplementation;
 
     /**
+     * @var ExtensionInstaller
+     */
+    private $extensionInstaller;
+
+    /**
+     * @var CoreInstaller
+     */
+    private $coreInstaller;
+
+    /**
      * @var array
      */
     private $handledEvents = [];
@@ -61,16 +71,24 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     {
         $this->ensureComposerConstraints($io);
         $pluginConfig = Config::load($composer, $io);
-        $composer
-            ->getInstallationManager()
-            ->addInstaller(
-                new ExtensionInstaller($io, $composer, $pluginConfig)
-            );
-        $composer
-            ->getInstallationManager()
-            ->addInstaller(
-                new CoreInstaller($io, $composer, 'typo3-cms-core')
-            );
+
+        if ($this->extensionInstaller === null) {
+            $this->extensionInstaller = new ExtensionInstaller($io, $composer, $pluginConfig);
+            $composer
+                ->getInstallationManager()
+                ->addInstaller(
+                    $this->extensionInstaller
+                );
+        }
+
+        if ($this->coreInstaller === null) {
+            $this->coreInstaller = new CoreInstaller($io, $composer, 'typo3-cms-core');
+            $composer
+                ->getInstallationManager()
+                ->addInstaller(
+                    $this->coreInstaller
+                );
+        }
 
         $composer->getEventDispatcher()->addSubscriber($this);
     }

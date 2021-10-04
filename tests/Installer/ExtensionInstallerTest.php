@@ -69,7 +69,7 @@ class ExtensionInstallerTest extends InstallerTestCase
         $package->setExtra($packageData['extra']);
 
         $installPath = $installer->getInstallPath($package);
-        $this->assertSame($expectedPath, $installPath);
+        $this->assertSame($this->rootDirectory . $expectedPath, $installPath);
     }
 
     public function extensionInstallPathDataProvider()
@@ -85,7 +85,7 @@ class ExtensionInstallerTest extends InstallerTestCase
                         ],
                     ],
                 ],
-                'expectedPath' => '/public/typo3/sysext/core',
+                'expectedPath' => '/vendor/typo3/cms-core',
             ],
             [
                 'packageData' => [
@@ -97,7 +97,7 @@ class ExtensionInstallerTest extends InstallerTestCase
                         ],
                     ],
                 ],
-                'expectedPath' => '/public/typo3conf/ext/extension',
+                'expectedPath' => '/vendor/somevendor/somepackage-extension',
             ],
         ];
     }
